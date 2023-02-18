@@ -2,10 +2,13 @@
 
 public enum WeaponType
 {
-    SimpleMelee = 0,
-    SimpleRanged = 1,
-    MartialMelee = 10,
-    MartialRanged = 11,
-    Firearm = 20,
-    Improvised = 30,
+    SimpleMelee = 1,
+    SimpleRanged = 2,
+
+    MartialMelee = 11,
+    MartialRanged = 12,
+    
+    Firearm = 21,
+    
+    Improvised = 31,
 }

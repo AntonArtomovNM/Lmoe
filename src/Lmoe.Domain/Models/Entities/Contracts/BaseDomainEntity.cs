@@ -8,7 +8,7 @@ public abstract class BaseDomainEntity
 
     public DateTimeOffset? UpdatedAt { get; protected set; }
 
-    public DateTimeOffset? DeletedAt { get; protected set; }
+    public DateTimeOffset? DeletedAt { get; private set; }
 
     protected BaseDomainEntity()
     {
