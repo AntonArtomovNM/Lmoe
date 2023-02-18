@@ -5,11 +5,16 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lmoe.Host", "Lmoe.Host\Lmoe.Host.csproj", "{5A50BDFA-2564-4B77-BAEB-8DCC1F1B325F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lmoe.Domain", "Lmoe.Domain\Lmoe.Domain.csproj", "{40B4B20D-E3C4-439F-891C-00381E0D2B76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lmoe.Domain", "Lmoe.Domain\Lmoe.Domain.csproj", "{40B4B20D-E3C4-439F-891C-00381E0D2B76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lmoe.Application", "Lmoe.Application\Lmoe.Application.csproj", "{4A6B7BB3-8FBB-4F83-9895-D2BA27F00C58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lmoe.Application", "Lmoe.Application\Lmoe.Application.csproj", "{4A6B7BB3-8FBB-4F83-9895-D2BA27F00C58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lmoe.Infrustructure.MongoDB", "Lmoe.Infrustructure.MongoDB\Lmoe.Infrustructure.MongoDB.csproj", "{22726A26-D758-48F9-814F-6C97766E0B31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lmoe.Infrastructure.MongoDB", "Lmoe.Infrustructure.MongoDB\Lmoe.Infrastructure.MongoDB.csproj", "{22726A26-D758-48F9-814F-6C97766E0B31}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{98806121-33F8-4A27-B2D0-6FC33A2F7177}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
