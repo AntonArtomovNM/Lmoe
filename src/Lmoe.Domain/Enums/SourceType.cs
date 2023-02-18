@@ -3,8 +3,8 @@
 public enum SourceType
 {
     HomeBrew = 0,
-    PlayersHandbook = 1,
-    DungeonMastersGuide = 2,
-    XanatharsGuideToEverything = 3,
-    TashasCauldronOfEverything = 4,
+    DnD5e = 1,
+    OneDnD = 2,
+    ProjectBlackFlag = 3,
+    Pathfinder2e = 4,
 }
