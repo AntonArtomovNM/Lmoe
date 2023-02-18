@@ -4,7 +4,7 @@ public abstract class BaseDomainEntity
 {
     public Guid Id { get; }
 
-    public DateTimeOffset CreatedAt { get; protected set; }
+    public DateTimeOffset CreatedAt { get; }
 
     public DateTimeOffset? UpdatedAt { get; protected set; }
 

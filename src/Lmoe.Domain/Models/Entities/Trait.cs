@@ -5,7 +5,7 @@ namespace Lmoe.Domain.Models.Entities;
 
 public class Trait : BaseSourceMaterial
 {
-    public TraitType TraitType { get; private set; }
+    public TraitType Type { get; private set; }
 
     public string Description { get; private set; }
 
@@ -13,13 +13,13 @@ public class Trait : BaseSourceMaterial
     {
     }
 
-    public static Trait Create(SourceType source, string name, TraitType traitType, string description)
+    public static Trait Create(SourceType source, string name, TraitType type, string description)
     {
         return new()
         {
             Source = source,
             Name = name,
-            TraitType = traitType,
+            Type = type,
             Description = description,
         };
     }
