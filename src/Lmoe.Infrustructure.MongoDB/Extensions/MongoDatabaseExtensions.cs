@@ -8,7 +8,7 @@ public static class MongoDatabaseExtensions
     private const int ExpireRecordsAfterDays = 30;
 
     public static IMongoCollection<T> ConfigureCollection<T>(this IMongoDatabase mongoDatabase, string collectionName, Func<IndexKeysDefinitionBuilder<T>, IndexKeysDefinition<T>> lookupIndexFunc)
-        where T : BaseDomainEntity
+        where T : DomainEntityBase
     {
         var collection = mongoDatabase.GetCollection<T>(collectionName);
 
