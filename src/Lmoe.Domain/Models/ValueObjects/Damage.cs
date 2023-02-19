@@ -8,5 +8,6 @@ public class Damage
 
     public int DiceAmount { get; }
 
-    public IEnumerable<DamageType> Types { get; }
+    // TODO: Validate that at least 1 dmg type specified
+    public IReadOnlyCollection<DamageType> Types { get; }
 }

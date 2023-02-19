@@ -4,18 +4,30 @@ using MongoDB.Driver;
 
 namespace Lmoe.Infrastructure.MongoDB.Repositories;
 
-public class WeaponRepository : GenericRepository<Weapon>, IWeaponRepository
+public class WeaponRepository : RepositoryBase<Weapon>, IWeaponRepository
 {
     public WeaponRepository(IMongoCollection<Weapon> mongoCollection)
         : base(mongoCollection)
     {
     }
 
-    public async Task RemoveTraitTag(Guid traitId)
+    public async Task Create(Weapon weapon)
     {
-        var filter = Builders<Weapon>.Filter.ElemMatch(w => w.Traits, wp => wp.TraitId == traitId);
-        var update = Builders<Weapon>.Update.PullFilter(w => w.Traits, wp => wp.TraitId == traitId);
+        await _mongoCollection.InsertOneAsync(weapon);
+    }
 
-        await _mongoCollection.UpdateManyAsync(filter, update);
+    public async Task Update(Weapon weapon)
+    {
+        await _mongoCollection.ReplaceOneAsync(GetIdFilter(weapon.Id), weapon);
+    }
+
+    public async Task<Weapon> GetById(Guid id)
+    {
+        return await _mongoCollection.Find(GetIdFilter(id)).FirstOrDefaultAsync();
+    }
+
+    public async Task<ICollection<Weapon>> GetAll()
+    {
+        return await _mongoCollection.Find(GetNotDeletedFilted()).ToListAsync();
     }
 }

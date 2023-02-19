@@ -2,6 +2,13 @@
 
 namespace Lmoe.Domain.Repositories;
 
-public interface IAmmoPackRepository : IRepository<AmmoPack>
+public interface IAmmoPackRepository
 {
+    Task Create(AmmoPack ammoPack);
+
+    Task Update(AmmoPack ammoPack);
+
+    Task<AmmoPack> GetById(Guid id);
+
+    Task<ICollection<AmmoPack>> GetAll();
 }

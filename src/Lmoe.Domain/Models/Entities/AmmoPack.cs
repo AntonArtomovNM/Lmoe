@@ -4,7 +4,7 @@ using Lmoe.Domain.Models.ValueObjects;
 
 namespace Lmoe.Domain.Models.Entities;
 
-public class AmmoPack : BaseEquipment
+public class AmmoPack : EquipmentBase
 {
     public AmmunitionType AmmoType { get; private set; }
 
@@ -24,35 +24,20 @@ public class AmmoPack : BaseEquipment
         AmmunitionType ammoType,
         int size)
     {
-        return new()
-        {
-            Source = source,
-            Name = name,
-            Weight = weight,
-            Price = price,
-            IsRare = isRare,
-            Description = description,
-            AmmoType = ammoType,
-            Size = size,
-        };
+        var ammoPack = new AmmoPack();
+
+        ammoPack.SetSource(source);
+        ammoPack.SetEquipmentInfo(name, weight, price, isRare, description);
+        ammoPack.SetAmmoPackInfo(ammoType, size);
+
+        return ammoPack;
     }
 
-    public void Update(
-        string name,
-        float weight,
-        Money price,
-        bool isRare,
-        string? description,
-        AmmunitionType ammoType,
-        int size)
+    public void SetAmmoPackInfo(AmmunitionType ammoType, int size)
     {
-        Name = name;
-        Weight = weight;
-        Price = price;
-        IsRare = isRare;
-        Description = description;
         AmmoType = ammoType;
         Size = size;
+
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 }

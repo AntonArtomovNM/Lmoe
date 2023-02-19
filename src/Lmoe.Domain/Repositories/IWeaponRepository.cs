@@ -2,7 +2,13 @@
 
 namespace Lmoe.Domain.Repositories;
 
-public interface IWeaponRepository : IRepository<Weapon>
+public interface IWeaponRepository
 {
-    Task RemoveTraitTag(Guid traitId);
+    Task Create(Weapon weapon);
+
+    Task Update(Weapon weapon);
+
+    Task<Weapon> GetById(Guid id);
+
+    Task<ICollection<Weapon>> GetAll();
 }

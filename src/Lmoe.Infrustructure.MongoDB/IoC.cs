@@ -43,6 +43,7 @@ public static class IoC
 
         // Register repositories
         container.Register<ITraitRepository, TraitRepository>(Lifestyle.Scoped);
+        container.Register<ITraitTagRepository, TraitTagRepository>(Lifestyle.Scoped);
         container.Register<IWeaponRepository, WeaponRepository>(Lifestyle.Scoped);
         container.Register<IAmmoPackRepository, AmmoPackRepository>(Lifestyle.Scoped);
 

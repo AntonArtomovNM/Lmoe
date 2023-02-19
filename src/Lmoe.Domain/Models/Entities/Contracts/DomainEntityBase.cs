@@ -1,6 +1,6 @@
 ﻿namespace Lmoe.Domain.Models.Entities.Base;
 
-public abstract class BaseDomainEntity
+public abstract class DomainEntityBase
 {
     public Guid Id { get; }
 
@@ -10,7 +10,7 @@ public abstract class BaseDomainEntity
 
     public DateTimeOffset? DeletedAt { get; private set; }
 
-    protected BaseDomainEntity()
+    protected DomainEntityBase()
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTimeOffset.UtcNow;

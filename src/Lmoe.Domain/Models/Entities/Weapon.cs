@@ -1,17 +1,20 @@
 ﻿using Lmoe.Domain.Enums;
 using Lmoe.Domain.Models.Entities.Base;
+using Lmoe.Domain.Models.Entities.Contracts;
 using Lmoe.Domain.Models.ValueObjects;
 
 namespace Lmoe.Domain.Models.Entities;
 
-public class Weapon : BaseEquipment
+public class Weapon : EquipmentBase, ITraitTaggable
 {
+    // Common
     public WeaponType Type { get; private set; }
 
-    public Damage Damage { get; private set; }
+    public Damage? Damage { get; private set; }
 
-    public IEnumerable<TraitTag> Traits { get; private set; }
+    public IReadOnlyCollection<TraitTag> Traits { get; private set; }
 
+    // Depends on weapon type
     public string? Range { get; private set; }
 
     public AmmunitionType? AmmoType { get; private set; }
@@ -22,7 +25,7 @@ public class Weapon : BaseEquipment
     {
     }
 
-    public static Weapon CreateMeleeWeapon(
+    public static Weapon CreateMelee(
         SourceType source,
         string name,
         float weight,
@@ -30,24 +33,19 @@ public class Weapon : BaseEquipment
         bool isRare,
         string? description,
         WeaponType type,
-        Damage damage,
-        IEnumerable<TraitTag> traits)
+        Damage? damage,
+        IReadOnlyCollection<TraitTag> traits)
     {
-        return new()
-        {
-            Source = source,
-            Name = name,
-            Weight = weight,
-            Price = price,
-            IsRare = isRare,
-            Description = description,
-            Type = type,
-            Damage = damage,
-            Traits = traits,
-        };
+        var weapon = new Weapon();
+
+        weapon.SetSource(source);
+        weapon.SetEquipmentInfo(name, weight, price, isRare, description);
+        weapon.SetMeleeWeaponInfo(type, damage, traits);
+
+        return weapon;
     }
 
-    public static Weapon CreateRangedWeapon(
+    public static Weapon CreateRanged(
         SourceType source,
         string name,
         float weight,
@@ -55,25 +53,18 @@ public class Weapon : BaseEquipment
         bool isRare,
         string? description,
         WeaponType type,
-        Damage damage,
-        IEnumerable<TraitTag> traits,
+        Damage? damage,
         string range,
-        AmmunitionType ammoType)
+        AmmunitionType ammoType,
+        IReadOnlyCollection<TraitTag> traits)
     {
-        return new()
-        {
-            Source = source,
-            Name = name,
-            Weight = weight,
-            Price = price,
-            IsRare = isRare,
-            Description = description,
-            Type = type,
-            Damage = damage,
-            Traits = traits,
-            Range = range,
-            AmmoType = ammoType,
-        };
+        var weapon = new Weapon();
+
+        weapon.SetSource(source);
+        weapon.SetEquipmentInfo(name, weight, price, isRare, description);
+        weapon.SetRangedWeaponInfo(type, damage, range, ammoType, traits);
+
+        return weapon;
     }
 
     public static Weapon CreateFirearm(
@@ -83,150 +74,107 @@ public class Weapon : BaseEquipment
         Money price,
         bool isRare,
         string? description,
-        Damage damage,
-        IEnumerable<TraitTag> traits,
+        Damage? damage,
         string range,
-        BulletPack bulletPack)
+        BulletPack bulletPack,
+        IReadOnlyCollection<TraitTag> traits)
     {
-        return new()
-        {
-            Source = source,
-            Name = name,
-            Weight = weight,
-            Price = price,
-            IsRare = isRare,
-            Description = description,
-            Type = WeaponType.Firearm,
-            Damage = damage,
-            Traits = traits,
-            Range = range,
-            AmmoType = AmmunitionType.Bullet,
-            BulletPack = bulletPack,
-        };
+        var weapon = new Weapon();
+
+        weapon.SetSource(source);
+        weapon.SetEquipmentInfo(name, weight, price, isRare, description);
+        weapon.SetFirearmInfo(damage, range, bulletPack, traits);
+
+        return weapon;
     }
 
-    public static Weapon CreateImprovisedWeapon(
+    public static Weapon CreateImprovised(
         SourceType source,
         string name,
         float weight,
         Money price,
         bool isRare,
         string? description,
-        Damage damage,
-        IEnumerable<TraitTag> traits,
-        string? range)
+        Damage? damage,
+        string? range,
+        IReadOnlyCollection<TraitTag> traits)
     {
-        return new()
-        {
-            Source = source,
-            Name = name,
-            Weight = weight,
-            Price = price,
-            IsRare = isRare,
-            Description = description,
-            Type = WeaponType.Improvised,
-            Damage = damage,
-            Traits = traits,
-            Range = range,
-        };
+        var weapon = new Weapon();
+
+        weapon.SetSource(source);
+        weapon.SetEquipmentInfo(name, weight, price, isRare, description);
+        weapon.SetImprovisedWeaponInfo(damage, range, traits);
+
+        return weapon;
     }
 
-    public void UpdateMeleeWeapon(
-        string name,
-        float weight,
-        Money price,
-        bool isRare,
-        string? description,
+    public void SetMeleeWeaponInfo(
         WeaponType type,
-        Damage damage,
-        IEnumerable<TraitTag> traits)
+        Damage? damage,
+        IReadOnlyCollection<TraitTag> traits)
     {
-        Name = name;
-        Weight = weight;
-        Price = price;
-        IsRare = isRare;
-        Description = description;
+        // TODO: Validate weapon type
+        // TODO: Validate damage?
         Type = type;
         Damage = damage;
-        Traits = traits;
         Range = null;
         AmmoType = null;
         BulletPack = null;
+        Traits = traits;
+
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 
-    public void UpdateRangedWeapon(
-        string name,
-        float weight,
-        Money price,
-        bool isRare,
-        string? description,
+    public void SetRangedWeaponInfo(
         WeaponType type,
-        Damage damage,
-        IEnumerable<TraitTag> traits,
+        Damage? damage,
         string range,
-        AmmunitionType ammoType)
+        AmmunitionType ammoType,
+        IReadOnlyCollection<TraitTag> traits)
     {
-        Name = name;
-        Weight = weight;
-        Price = price;
-        IsRare = isRare;
-        Description = description;
+        // TODO: Validate weapon type and ammo type
+        // TODO: Validate damage?
         Type = type;
         Damage = damage;
-        Traits = traits;
         Range = range;
         AmmoType = ammoType;
         BulletPack = null;
+        Traits = traits;
+
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 
-    public void UpdateFirearm(
-        string name,
-        float weight,
-        Money price,
-        bool isRare,
-        string? description,
-        Damage damage,
-        IEnumerable<TraitTag> traits,
+    public void SetFirearmInfo(
+        Damage? damage,
         string range,
-        BulletPack bulletPack)
+        BulletPack bulletPack,
+        IReadOnlyCollection<TraitTag> traits)
     {
-        Name = name;
-        Weight = weight;
-        Price = price;
-        IsRare = isRare;
-        Description = description;
+        // TODO: Validate bullet pack
+        // TODO: Validate damage?
         Type = WeaponType.Firearm;
         Damage = damage;
-        Traits = traits;
         Range = range;
         AmmoType = AmmunitionType.Bullet;
         BulletPack = bulletPack;
+        Traits = traits;
+
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 
-    public void UpdateImprovisedWeapon(
-        string name,
-        float weight,
-        Money price,
-        bool isRare,
-        string? description,
-        Damage damage,
-        IEnumerable<TraitTag> traits,
-        string? range)
+    public void SetImprovisedWeaponInfo(
+        Damage? damage,
+        string? range,
+        IReadOnlyCollection<TraitTag> traits)
     {
-        Name = name;
-        Weight = weight;
-        Price = price;
-        IsRare = isRare;
-        Description = description;
+        // TODO: Validate damage?
         Type = WeaponType.Improvised;
         Damage = damage;
-        Traits = traits;
         Range = range;
         AmmoType = null;
         BulletPack = null;
+        Traits = traits;
+
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 }

@@ -2,6 +2,5 @@
 
 public enum TraitType
 {
-    Common = 0, 
     Weapon = 1,
 }
