@@ -1,4 +1,6 @@
-﻿namespace Lmoe.Domain.Models.Entities.Base;
+﻿using Lmoe.Utils.Results;
+
+namespace Lmoe.Domain.Models.Entities.Base;
 
 public abstract class DomainEntityBase
 {
@@ -16,8 +18,10 @@ public abstract class DomainEntityBase
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
-    public void Delete()
+    public Result Delete()
     {
         DeletedAt = DateTimeOffset.UtcNow;
+
+        return Result.Success();
     }
 }

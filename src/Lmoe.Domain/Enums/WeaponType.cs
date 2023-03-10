@@ -9,6 +9,4 @@ public enum WeaponType
     MartialRanged = 12,
     
     Firearm = 21,
-    
-    Improvised = 31,
 }

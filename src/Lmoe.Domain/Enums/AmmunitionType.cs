@@ -6,5 +6,6 @@ public enum AmmunitionType
     Arrow = 1,
     Bolt = 2,
     Needle = 3,
-    Bullet = 4,
+    LightBullet = 4,
+    HeavyBullet = 5,
 }

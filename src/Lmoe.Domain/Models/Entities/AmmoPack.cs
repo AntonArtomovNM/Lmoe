@@ -1,6 +1,8 @@
 ﻿using Lmoe.Domain.Enums;
 using Lmoe.Domain.Models.Entities.Base;
 using Lmoe.Domain.Models.ValueObjects;
+using Lmoe.Domain.Validation;
+using Lmoe.Utils.Results;
 
 namespace Lmoe.Domain.Models.Entities;
 
@@ -14,7 +16,7 @@ public class AmmoPack : EquipmentBase
     {
     }
 
-    public static AmmoPack Create(
+    public static Result<AmmoPack> Create(
         SourceType source,
         string name,
         float weight,
@@ -26,18 +28,26 @@ public class AmmoPack : EquipmentBase
     {
         var ammoPack = new AmmoPack();
 
-        ammoPack.SetSource(source);
-        ammoPack.SetEquipmentInfo(name, weight, price, isRare, description);
-        ammoPack.SetAmmoPackInfo(ammoType, size);
-
-        return ammoPack;
+        return Result.Aggregate(
+            value: ammoPack,
+            ammoPack.SetSource(source),
+            ammoPack.SetEquipmentInfo(name, weight, price, isRare, description),
+            ammoPack.SetAmmoPackInfo(ammoType, size));
     }
 
-    public void SetAmmoPackInfo(AmmunitionType ammoType, int size)
+    public Result SetAmmoPackInfo(AmmunitionType ammoType, int size)
     {
+        var validation = AmmoPackValidator.ValidateSize(size);
+
+        if (validation.IsFailure)
+        {
+            return validation;
+        }
+
         AmmoType = ammoType;
         Size = size;
-
         UpdatedAt = DateTimeOffset.UtcNow;
+
+        return Result.Success();
     }
 }
