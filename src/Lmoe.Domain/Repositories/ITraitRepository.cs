@@ -11,5 +11,5 @@ public interface ITraitRepository
 
     Task<Trait> GetById(Guid id);
 
-    Task<ICollection<Trait>> GetAllOfType(TraitType type);
+    Task<ICollection<Trait>> GetByType(TraitType type);
 }

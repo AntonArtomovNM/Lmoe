@@ -2,6 +2,8 @@
 using Lmoe.Domain.Models.Entities.Base;
 using Lmoe.Domain.Models.Entities.Contracts;
 using Lmoe.Domain.Models.ValueObjects;
+using Lmoe.Domain.Validation;
+using Lmoe.Utils.Results;
 
 namespace Lmoe.Domain.Models.Entities;
 
@@ -19,33 +21,31 @@ public class Weapon : EquipmentBase, ITraitTaggable
 
     public AmmunitionType? AmmoType { get; private set; }
 
-    public BulletPack? BulletPack { get; private set; }
-
     private Weapon()
     {
     }
 
-    public static Weapon CreateMelee(
+    public static Result<Weapon> CreateMelee(
         SourceType source,
         string name,
         float weight,
         Money price,
         bool isRare,
         string? description,
-        WeaponType type,
+        bool isMartial,
         Damage? damage,
         IReadOnlyCollection<TraitTag> traits)
     {
         var weapon = new Weapon();
 
-        weapon.SetSource(source);
-        weapon.SetEquipmentInfo(name, weight, price, isRare, description);
-        weapon.SetMeleeWeaponInfo(type, damage, traits);
-
-        return weapon;
+        return Result.Aggregate(
+            value: weapon,
+            weapon.SetSource(source),
+            weapon.SetEquipmentInfo(name, weight, price, isRare, description),
+            weapon.SetMeleeWeaponInfo(isMartial, damage, traits));
     }
 
-    public static Weapon CreateRanged(
+    public static Result<Weapon> CreateRanged(
         SourceType source,
         string name,
         float weight,
@@ -53,6 +53,7 @@ public class Weapon : EquipmentBase, ITraitTaggable
         bool isRare,
         string? description,
         WeaponType type,
+        bool isMartial,
         Damage? damage,
         string range,
         AmmunitionType ammoType,
@@ -60,14 +61,14 @@ public class Weapon : EquipmentBase, ITraitTaggable
     {
         var weapon = new Weapon();
 
-        weapon.SetSource(source);
-        weapon.SetEquipmentInfo(name, weight, price, isRare, description);
-        weapon.SetRangedWeaponInfo(type, damage, range, ammoType, traits);
-
-        return weapon;
+        return Result.Aggregate(
+            value: weapon,
+            weapon.SetSource(source),
+            weapon.SetEquipmentInfo(name, weight, price, isRare, description),
+            weapon.SetRangedWeaponInfo(isMartial, damage, range, ammoType, traits));
     }
 
-    public static Weapon CreateFirearm(
+    public static Result<Weapon> CreateFirearm(
         SourceType source,
         string name,
         float weight,
@@ -76,105 +77,90 @@ public class Weapon : EquipmentBase, ITraitTaggable
         string? description,
         Damage? damage,
         string range,
-        BulletPack bulletPack,
+        AmmunitionType ammoType,
         IReadOnlyCollection<TraitTag> traits)
     {
         var weapon = new Weapon();
 
-        weapon.SetSource(source);
-        weapon.SetEquipmentInfo(name, weight, price, isRare, description);
-        weapon.SetFirearmInfo(damage, range, bulletPack, traits);
-
-        return weapon;
+        return Result.Aggregate(
+            value: weapon,
+            weapon.SetSource(source),
+            weapon.SetEquipmentInfo(name, weight, price, isRare, description),
+            weapon.SetFirearmInfo(damage, range, ammoType, traits));
     }
 
-    public static Weapon CreateImprovised(
-        SourceType source,
-        string name,
-        float weight,
-        Money price,
-        bool isRare,
-        string? description,
-        Damage? damage,
-        string? range,
-        IReadOnlyCollection<TraitTag> traits)
-    {
-        var weapon = new Weapon();
-
-        weapon.SetSource(source);
-        weapon.SetEquipmentInfo(name, weight, price, isRare, description);
-        weapon.SetImprovisedWeaponInfo(damage, range, traits);
-
-        return weapon;
-    }
-
-    public void SetMeleeWeaponInfo(
-        WeaponType type,
+    public Result SetMeleeWeaponInfo(
+        bool isMartial,
         Damage? damage,
         IReadOnlyCollection<TraitTag> traits)
     {
-        // TODO: Validate weapon type
-        // TODO: Validate damage?
-        Type = type;
+        var validation = WeaponValidator.ValidateDamage(damage);
+
+        if (validation.IsFailure)
+        {
+            return validation;
+        }
+
+        Type = isMartial ? WeaponType.MartialMelee : WeaponType.SimpleMelee;
         Damage = damage;
         Range = null;
         AmmoType = null;
-        BulletPack = null;
         Traits = traits;
-
         UpdatedAt = DateTimeOffset.UtcNow;
+
+        return Result.Success();
     }
 
-    public void SetRangedWeaponInfo(
-        WeaponType type,
+    public Result SetRangedWeaponInfo(
+        bool isMartial,
         Damage? damage,
         string range,
         AmmunitionType ammoType,
         IReadOnlyCollection<TraitTag> traits)
     {
-        // TODO: Validate weapon type and ammo type
-        // TODO: Validate damage?
-        Type = type;
+        var validation = Result.Aggregate(
+            WeaponValidator.ValidateDamage(damage),
+            WeaponValidator.ValidateRange(range),
+            WeaponValidator.ValidateAmmoTypeForRangedWeapon(ammoType));
+
+        if (validation.IsFailure)
+        {
+            return validation;
+        }
+
+        Type = isMartial ? WeaponType.MartialRanged : WeaponType.SimpleRanged;
         Damage = damage;
         Range = range;
         AmmoType = ammoType;
-        BulletPack = null;
         Traits = traits;
-
         UpdatedAt = DateTimeOffset.UtcNow;
+
+        return Result.Success();
     }
 
-    public void SetFirearmInfo(
+    public Result SetFirearmInfo(
         Damage? damage,
         string range,
-        BulletPack bulletPack,
+        AmmunitionType ammoType,
         IReadOnlyCollection<TraitTag> traits)
     {
-        // TODO: Validate bullet pack
-        // TODO: Validate damage?
+        var validation = Result.Aggregate(
+            WeaponValidator.ValidateDamage(damage),
+            WeaponValidator.ValidateRange(range),
+            WeaponValidator.ValidateAmmoTypeForFirearms(ammoType));
+
+        if (validation.IsFailure)
+        {
+            return validation;
+        }
+
         Type = WeaponType.Firearm;
         Damage = damage;
         Range = range;
-        AmmoType = AmmunitionType.Bullet;
-        BulletPack = bulletPack;
+        AmmoType = ammoType;
         Traits = traits;
-
         UpdatedAt = DateTimeOffset.UtcNow;
-    }
 
-    public void SetImprovisedWeaponInfo(
-        Damage? damage,
-        string? range,
-        IReadOnlyCollection<TraitTag> traits)
-    {
-        // TODO: Validate damage?
-        Type = WeaponType.Improvised;
-        Damage = damage;
-        Range = range;
-        AmmoType = null;
-        BulletPack = null;
-        Traits = traits;
-
-        UpdatedAt = DateTimeOffset.UtcNow;
+        return Result.Success();
     }
 }

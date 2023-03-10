@@ -27,7 +27,7 @@ public class TraitRepository : RepositoryBase<Trait>, ITraitRepository
         return await _mongoCollection.Find(GetIdFilter(id)).FirstOrDefaultAsync();
     }
 
-    public async Task<ICollection<Trait>> GetAllOfType(TraitType type)
+    public async Task<ICollection<Trait>> GetByType(TraitType type)
     {
         var filter = Builders<Trait>.Filter.And(
             GetNotDeletedFilted(),

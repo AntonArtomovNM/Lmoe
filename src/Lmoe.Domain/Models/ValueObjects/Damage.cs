@@ -1,4 +1,5 @@
 ﻿using Lmoe.Domain.Enums;
+using Lmoe.Utils.Results;
 
 namespace Lmoe.Domain.Models.ValueObjects;
 
@@ -8,6 +9,5 @@ public class Damage
 
     public int DiceAmount { get; }
 
-    // TODO: Validate that at least 1 dmg type specified
     public IReadOnlyCollection<DamageType> Types { get; }
 }
